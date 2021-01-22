@@ -1,0 +1,6 @@
+/lambda/
+/scripts
+/config
+.history
+/node_modules
+*.less
