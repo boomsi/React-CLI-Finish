@@ -1,14 +1,16 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { merge } = require('webpack-merge');
 
-const config = {
-  entry: ['react-hot-loader/patch', './src/index.tsx'],
+const devConfig = require('./webpack.config.dev');
+const prodConfig = require('./webpack.config.prod');
+
+const commonConfig = {
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../dist'),
     filename: 'bundle.js'
+    // publicPath: '/assets/'
   },
   module: {
     rules: [
@@ -40,19 +42,11 @@ const config = {
         ]
       },
       {
-        test: /\.svg$/,
-        use: 'file-loader'
-      },
-      {
-        test: /\.png$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              mimetype: 'image/png'
-            }
-          }
-        ]
+        test: /\.(png|jpg|svg)$/i,
+        loader: 'file-loader',
+        options: {
+          name: 'assets/[hash].[ext]'
+        }
       }
     ]
   },
@@ -60,28 +54,31 @@ const config = {
     extensions: ['.js', '.jsx', '.tsx', '.ts'],
     alias: {
       'react-dom': '@hot-loader/react-dom',
-      '@public': path.resolve(__dirname, 'public'),
-      '@src': path.resolve(__dirname, 'src')
+      '@': path.resolve(__dirname, '../src')
     }
-  },
-  devServer: {
-    contentBase: './dist',
-    compress: true,
-    port: 8000
   },
   plugins: [
     new HtmlWebpackPlugin({
       appMountId: 'app',
       filename: 'index.html',
-      template: path.resolve(__dirname, 'public/template.ejs')
+      template: path.resolve(__dirname, '../public/template.ejs')
     }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
-    new LodashModuleReplacementPlugin(),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      openAnalyzer: false
-    })
-  ]
+    new webpack.ProgressPlugin()
+  ],
+  // FIXME
+  optimization: {
+    minimize: false
+  }
 };
 
-module.exports = config;
+module.exports = (env) => {
+  switch (env.NODE_ENV) {
+    case 'development':
+      return merge(commonConfig, devConfig);
+    case 'production':
+      return merge(commonConfig, prodConfig);
+    default:
+      throw new Error('No matching configuration was found!');
+  }
+};

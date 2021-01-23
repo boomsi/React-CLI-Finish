@@ -1,8 +1,8 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import { common_en, target_en } from '@src/locales/en/exports';
-import { common_zh, target_zh } from '@src/locales/zh/exports';
+import { common_en, target_en } from '@/locales/en/exports';
+import { common_zh, target_zh } from '@/locales/zh/exports';
 
 // Documentation https://react.i18next.com/latest/withtranslation-hoc
 
