@@ -3,6 +3,7 @@ import { hot } from 'react-hot-loader/root';
 import { Button } from 'antd';
 import { withTranslation, WithTranslation } from 'react-i18next';
 
+import Router from './router'
 import png from './assets/404.png';
 
 interface Props extends WithTranslation {
@@ -14,8 +15,9 @@ class LegacyComponentClass extends React.Component<Props> {
     const { name, t } = this.props;
     return (
       <>
-        <h1>Hello {name}</h1>
-        <Button type="primary">2333</Button>
+        <Router />
+        <h1>hello {name}</h1>
+        <Button type="primary">22333</Button>
         <p>{t('ss', { name: '2333' })}</p>
         <p>{t('target:tt')}</p>
         <img src={png} alt='' />
